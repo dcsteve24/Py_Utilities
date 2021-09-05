@@ -15,8 +15,8 @@ Usage:
 
 __constants__:
     ACCEPTED_LOG_LEVELS
-    DEFAULT_LOGGING_PATH
-    FORMATTER
+    _DEFAULT_LOGGING_PATH
+    _FORMATTER
 
 __functions__:
     _level_value_check
@@ -25,6 +25,7 @@ __functions__:
 
 @author: dcsteve24
 __python_version__ = Py2/Py3
+__os__ = Windows/Linux
 __updated__ = '2021-09-04'
 """
 
@@ -32,7 +33,10 @@ import logging.handlers
 import os
 import sys
 
-
+# Default logging path to the home directory -- for troubleshooting/debugging
+_DEFAULT_LOGGING_PATH = os.path.join(os.path.expanduser('~'), 'python_debug.log')
+# Logging Format
+_FORMATTER = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 # The acceptable log level values
 ACCEPTED_LOG_LEVELS = {'debug': logging.DEBUG,  # 10
                        'info': logging.INFO,  # 20
@@ -41,10 +45,6 @@ ACCEPTED_LOG_LEVELS = {'debug': logging.DEBUG,  # 10
                        'error': logging.ERROR,  # 40
                        'critical': logging.CRITICAL,  # 50
                        'fatal': logging.FATAL}  # 50
-# Default logging path to the home directory -- for troubleshooting/debugging
-DEFAULT_LOGGING_PATH = os.path.join(os.path.expanduser('~'), 'python_debug.log')
-# Logging Format
-FORMATTER = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
 
 def _level_value_check(level):
@@ -137,7 +137,7 @@ def create_logger(log_path=DEFAULT_LOGGING_PATH,
     return logger
 
 
-def _log_message(level, message, logger_id=__name__):
+def log_message(level, message, logger_id=__name__):
     """ Helper to log a message to the passed logger. Prevents need of importing/knowing the logging
     module INFO, DEBUG, etc. in your module and prevents the passing of the object around; though
     you can still do this if desired. Instead, call this with the logger_id defaults or set a global
@@ -151,9 +151,10 @@ def _log_message(level, message, logger_id=__name__):
 
         Optional:
             logger_id: Str or logging.Logger object. The logger unique identifier to use for logging
-            or the configured logging.Logger object. If a logger with the logger identifier exists
-            in this Python instance it will pull that logger and its configurations and log to it.
-            If this object does not exist, it will create it with the default args in create_logger.
+                or the configured logging.Logger object. If a logger with the logger identifier
+                exists in this Python instance it will pull that logger and its configurations and
+                log to it. If this object does not exist, it will create it with the default args
+                in create_logger.
     """
     level = _level_value_check(level)
     if type(logger_id) is logging.Logger:
