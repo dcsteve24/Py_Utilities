@@ -1,1 +1,6 @@
-Initial for repo
+Contains a series of modules for utility level functions. Fully designed to be imported to prevent
+recoding of common things.
+
+Rules of this package:
+1) Cannot import third party software.
+2) Cannot rely on other utility modules (to prevent dependency loops)
